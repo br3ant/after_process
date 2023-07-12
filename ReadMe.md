@@ -1,9 +1,12 @@
 ## 安装
-pip install "uvicorn[standard]"
-pip install fastapi
+pip install "uvicorn[standard]"  
+
+pip install fastapi  
+
+pip install gunicorn
 
 ## 启动
-uvicorn main:app
+gunicorn main:app -c gunicorn.py
 
 ## websocket
-ws://127.0.0.1:8000/ws/123
+ws://0.0.0.0:8000/ws/123
