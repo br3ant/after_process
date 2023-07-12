@@ -14,8 +14,8 @@ class MessageBody(BaseModel):
 data = {
     "UserId": "123456",
     "Msg": {
-        "Type": "Type",
-        "ContentType": "json",
-        "Content": "Base64"
+        "Type": "text",
+        "ContentType": "Json",
+        "Content": "eyJzbiI6MiwibHMiOnRydWUsImJnIjowLCJlZCI6MCwid3MiOlt7ImJnIjowLCJjdyI6W3sic2MiOjAsInciOiLvvJ8ifV19XX0="
     }
 }

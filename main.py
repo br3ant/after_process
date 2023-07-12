@@ -1,27 +1,36 @@
-import uvicorn
-from fastapi import FastAPI
-from fastapi import WebSocket
-from fastapi import WebSocketDisconnect
 import hashlib
-from message import MessageBody
-
+import uvicorn
 from typing import List
 
+from fastapi import FastAPI
+from fastapi import Response
+from fastapi import WebSocket
+from fastapi import WebSocketDisconnect
+
+from message import MessageBody
+import base64
+import json
+import logging
+
+gunicorn_logger = logging.getLogger('gunicorn.error')
+
 app = FastAPI()
+
+encoding = 'utf-8'
 
 
 @app.get("/")
 def home():
     sha1 = hashlib.sha1()
-    sha1.update("token".encode('utf-8'))
-    res = sha1.hexdigest()
-    return res
+    sha1.update("41cd274dace59708".encode(encoding))
+    return Response(sha1.hexdigest())
 
 
 @app.post("/")
 async def home_post(body: MessageBody):
     await manager.broadcast(body.Msg.Content)
-    return {"Hello": "POST"}
+    rsp = base64.b64decode(body.Msg.Content).decode(encoding)
+    return json.loads(rsp)
 
 
 @app.websocket("/ws/{client_id}")
@@ -60,6 +69,7 @@ class ConnectionManager:
         await websocket.send_text(message)
 
     async def broadcast(self, message: str):
+        gunicorn_logger.info(f"broadcast live {len(self.active_connections)} message = {message}")
         for connection in self.active_connections:
             await connection.send_text(message)
 
