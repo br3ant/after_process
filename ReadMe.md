@@ -6,7 +6,7 @@ pip install fastapi
 pip install gunicorn
 
 ## 启动
-unicorn main:app
+uvicorn main:app
 
 ## websocket
 ws://127.0.0.1:8000/ws/123

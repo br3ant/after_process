@@ -11,6 +11,7 @@ from message import MessageBody
 import base64
 import json
 import logging
+import requests
 
 gunicorn_logger = logging.getLogger('gunicorn.error')
 
@@ -29,8 +30,15 @@ def home():
 @app.post("/")
 async def home_post(body: MessageBody):
     await manager.broadcast(body.Msg.Content)
-    rsp = base64.b64decode(body.Msg.Content).decode(encoding)
-    return json.loads(rsp)
+    content = base64.b64decode(body.Msg.Content).decode(encoding)
+    aiui = json.loads(content)
+    gunicorn_logger.info(f"aiui：{content}")
+    uuid = aiui.get('uuid', 'unknown')
+    text = aiui.get('text', 'unknown')
+    data = {"sid": "44", "uuid": uuid, "text": text}
+    rsp = requests.post("http://47.106.32.164:8091/system/webSocket/sendAudioFile", data).text
+    gunicorn_logger.info(f"推送结果：{rsp}")
+    return aiui
 
 
 @app.websocket("/ws/{client_id}")
