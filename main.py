@@ -34,11 +34,12 @@ async def home_post(body: MessageBody):
     aiui = json.loads(content)
     intent = aiui.get('intent', {})
     gunicorn_logger.info(f"aiui：{content}")
-    uuid = intent.get('uuid', 'unknown')
-    text = intent.get('text', 'unknown')
-    data = {"sid": "44", "uuid": uuid, "text": text}
-    rsp = requests.post("http://47.106.32.164:8091/system/webSocket/sendAudioFile", data).text
-    gunicorn_logger.info(f"推送结果：{rsp}")
+    uuid = intent.get('uuid')
+    text = intent.get('text')
+    if uuid and text:
+        data = {"sid": "44", "uuid": uuid, "text": text}
+        rsp = requests.post("http://47.106.32.164:8091/system/webSocket/sendAudioFile", data).text
+        gunicorn_logger.info(f"推送结果：{rsp}")
     return aiui
 
 
